@@ -67,7 +67,10 @@ export default {
       this.$emit('percentChange', percent)
     },
     progressClick (e) {
-      this._offset(e.offsetX)
+      // 距离左侧屏幕位置
+      const rect = this.$refs.progressBar.getBoundingClientRect()
+      const offsetWidth = e.pageX - rect.left
+      this._offset(offsetWidth)
       this._percentToggle()
     }
   }

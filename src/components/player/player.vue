@@ -69,8 +69,8 @@
       </div>
     </transition>
     <!-- <audio :src="currentSong.url"></audio> -->
-    <audio ref="audio" @canplay="ready" @error="error" @timeupdate="updatatime" src="http://ws.stream.qqmusic.qq.com/C400000H6p9p0V4MXi.m4a?guid=4437767500&vkey=845F03B27325D2336D7C3AB0D07B61848D0BADDEDC8F8B6638A0D1E2C1BBC11682CD9D4E2D15E05FC7BEC0FDAE2A6DBC349D7362B3B720AC&uin=0&fromtag=66"></audio>
-    <!-- <audio ref="audio" @canplay="ready" @error="error" @timeupdate="updatatime" :src="currentSong.url"></audio> -->
+    <!-- <audio ref="audio" @canplay="ready" @error="error" @timeupdate="updatatime" @ended="end" src="http://ws.stream.qqmusic.qq.com/C400004C6vgM0jcGEq.m4a?guid=4437767500&vkey=FA5DF6B4DAA126AC78CCA964C94933A61D1DEA2EC203EB00193F1FFE7860F73D66A646A34A8A55B7384B4FCF17324919E9CA78B0A69CEC18&uin=0&fromtag=66"></audio> -->
+    <audio ref="audio" @canplay="ready" @error="error" @timeupdate="updatatime" @ended="end" :src="currentSong.url"></audio>
   </div>
 </template>
 
@@ -81,6 +81,7 @@ import {prefixStyle} from 'common/js/dom'
 import ProgressBar from 'base/progress-bar/progress-bar'
 import ProgressCircle from 'base/progress-circle/progress-circle'
 import {playMode} from 'common/js/config'
+import {shuffle} from 'common/js/util'
 
 const transform = prefixStyle('transform')
 
@@ -103,7 +104,8 @@ export default {
       'currentSong',
       'playing',
       'currentIndex',
-      'mode'
+      'mode',
+      'sequenceList'
     ]),
 
     // 播放/暂停css
@@ -146,7 +148,8 @@ export default {
       setFullScreen: 'SET_FULL_SCREEN',
       setPlayingState: 'SET_PLAYING_STATE',
       setCurrentIndex: 'SET_CURRENTINDEX',
-      setPlayMode: 'SET_PLAY_MODE'
+      setPlayMode: 'SET_PLAY_MODE',
+      setPlayList: 'SET_PLAYLIST'
     }),
 
     // 动画事件
@@ -184,7 +187,7 @@ export default {
       this.$refs.cdWrapper.style.transition = 'all 0.4s'
       const {x, y, scale} = this._getPosAndScale()
       this.$refs.cdWrapper[transform] = `translate3d(${x}px, ${y}px, 0) scale(${scale})`
-      this.$refs.cdWrapper.addEventListener('transitioned', done)
+      element.addEventListener('transitionend', done)
     },
     afterLeave () {
       this.$refs.cdWrapper.style.transition = ''
@@ -280,10 +283,45 @@ export default {
     changeMode () {
       const mode = (this.mode + 1) % 3
       this.setPlayMode(mode)
+      let list = null
+
+      if (mode === playMode.random) {
+        list = shuffle(this.sequenceList)
+        console.log(list)
+      } else {
+        list = this.sequenceList
+        console.log(mode, playMode.random)
+      }
+
+      this.resetCurrentIndex(list)
+      this.setPlayList(list)
+    },
+    resetCurrentIndex (list) {
+      let index = list.findIndex((item) => {
+        return item.id === this.currentSong.id
+      })
+
+      this.setCurrentIndex(index)
+    },
+
+    // ended
+    end () {
+      if (this.mode === playMode.loop) {
+        this.loop()
+      } else {
+        this.next()
+      }
+    },
+    loop () {
+      this.$refs.audio.currentTime = 0
     }
   },
   watch: {
-    currentSong (newValue) {
+    currentSong (newValue, oldValue) {
+      if (newValue.id === oldValue.id) {
+        return
+      }
+
       this.$nextTick(() => {
         this.$refs.audio.play()
       })

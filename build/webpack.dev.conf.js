@@ -67,6 +67,36 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         }).catch((err) => {
           console.log(err)
         })
+      }),
+      app.get('/api/lyric', function(req, res){
+        var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
+        axios.get(url, {
+          headers: {
+            referer: 'https://c.y.qq.com/',
+            host: 'c.y.qq.com'
+          },
+          params: req.query
+        }).then((result) => {
+          // result为qq返回数据，res返回到前端调用
+          res.json(result.data)
+        }).catch((err) => {
+          console.log(err)
+        })
+      }),
+      app.get('/api/getSongVkey', function(req, res){
+        var url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
+        axios.get(url, {
+          headers: {
+            referer: 'https://y.qq.com/portal/player.html',
+            origin: 'https://y.qq.com'
+          },
+          params: req.query
+        }).then((result) => {
+          // result为qq返回数据，res返回到前端调用
+          res.json(result.data)
+        }).catch((err) => {
+          console.log(err)
+        })
       })
     }
   },

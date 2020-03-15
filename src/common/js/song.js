@@ -1,5 +1,9 @@
+import {getLyric, getSongVkey} from 'api/song'
+import {ERR_OK} from 'api/config'
+import {Base64} from 'js-base64'
+
 export default class Song {
-  constructor ({id, mid, singer, name, album, duration, image, url}) {
+  constructor ({id, mid, singer, name, album, duration, image}) {
     this.id = id
     this.mid = mid
     this.singer = singer
@@ -7,11 +11,47 @@ export default class Song {
     this.album = album
     this.duration = duration
     this.image = image
-    this.url = url
+  }
+
+  // 内置函数
+  getLyric () {
+    if (this.lyric) {
+      return Promise.resolve(this.lyric)
+    }
+
+    return new Promise((resolve, reject) => {
+      getLyric(this.mid).then((res) => {
+        if (res.retcode === ERR_OK) {
+          this.lyric = Base64.decode(res.lyric)
+          resolve(this.lyric)
+        } else {
+          reject(new Error('no lyric'))
+        }
+      })
+    })
+  }
+
+  getSongSouse () {
+    if (this.url) {
+      return Promise.resolve(this.url)
+    }
+
+    return new Promise((resolve, reject) => {
+      getSongVkey(this.mid).then((res) => {
+        const req = res.req_0.data
+        if (req.midurlinfo[0].purl) {
+          this.url = `${req.sip[0]}${req.midurlinfo[0].purl}`
+          resolve(this.url)
+        } else {
+          this.url = ''
+          resolve(this.url)
+        }
+      })
+    })
   }
 }
 
-export function createSong (musicData, vkey, songmid) {
+export function createSong (musicData, purl) {
   return new Song({
     id: musicData.songid,
     mid: musicData.songmid,
@@ -19,11 +59,12 @@ export function createSong (musicData, vkey, songmid) {
     name: musicData.songname,
     album: musicData.albumname,
     duration: musicData.interval,
-    image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
+    image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`
     // url: `http://ws.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=46`
-    // url: `http://isure.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?guid=4437767500&vkey=${vkey}&uin=1298&fromtag=66`
+    // url: `http://isure.stream.qqmusic.qq.com/${purl}`
     // url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?fromtag=38&guid=1428104466&vkey=${vkey}`
-    url: `http://ws.stream.qqmusic.qq.com/C400${songmid}.m4a?guid=4437767500&vkey=${vkey}&uin=0&fromtag=66`
+    // url: `http://ws.stream.qqmusic.qq.com/C400${songmid}.m4a?guid=4437767500&vkey=${vkey}&uin=0&fromtag=66`
+    // url: ''
   })
 }
 

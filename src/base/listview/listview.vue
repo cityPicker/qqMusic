@@ -139,6 +139,9 @@ export default {
     // 抛出到外层组件选择歌手
     selectItem (item) {
       this.$emit('select', item)
+    },
+    refresh () {
+      this.$refs.listview.refresh()
     }
   },
   watch: {

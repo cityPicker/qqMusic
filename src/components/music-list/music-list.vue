@@ -31,6 +31,7 @@ import SongList from 'base/song-list/song-list'
 import Loading from 'base/loading/loading'
 import {prefixStyle} from 'common/js/dom'
 import {mapActions} from 'vuex'
+import {playlistMixin} from 'common/js/mixin'
 
 const TITLE_HEIGHT = 42
 const transform = prefixStyle('transform')
@@ -56,6 +57,7 @@ export default {
       default: ''
     }
   },
+  mixins: [playlistMixin],
   components: {
     Scroll,
     SongList,
@@ -97,7 +99,12 @@ export default {
     ...mapActions([
       'selectPlay',
       'randomPlay'
-    ])
+    ]),
+    handlePlaylist (playlist) {
+      const bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.list.$el.style.bottom = bottom
+      this.$refs.list.refresh()
+    }
   },
   watch: {
     scrollY (newY) {

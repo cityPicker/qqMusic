@@ -462,7 +462,7 @@ export default {
             this.getLyric()
           } else {
             this.setPlayingState(false)
-            this.currentLyric = null
+            // this.currentLyric = null
             // this.next()
           }
         })
@@ -470,9 +470,6 @@ export default {
     },
     playing (newValue) {
       const audio = this.$refs.audio
-      if (!audio) {
-        return
-      }
       this.$nextTick(() => {
         newValue ? audio.play() : audio.pause()
       })

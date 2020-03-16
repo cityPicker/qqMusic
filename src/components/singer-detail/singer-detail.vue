@@ -41,16 +41,9 @@ export default {
 
       list.forEach(item => {
         let {musicData} = item
-        // getSongVkey(musicData.songmid).then((res) => {
-        //   if (res.code === ERR_OK) {
-        //     const purl = res.req_0.data.midurlinfo[0].purl
-
-        //     if (musicData.albummid && musicData.songmid) {
-        //       ret.push(createSong(musicData, purl))
-        //     }
-        //   }
-        // })
-        ret.push(createSong(musicData))
+        if (musicData.albummid && musicData.songid) {
+          ret.push(createSong(musicData))
+        }
       })
 
       return ret

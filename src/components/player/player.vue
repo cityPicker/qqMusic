@@ -253,8 +253,8 @@ export default {
         this.loop()
       } else {
         let index = this.currentIndex - 1
-        if (index === 0) {
-          index = this.playlist.length
+        if (index === -1) {
+          index = this.playlist.length - 1
         }
         this.setCurrentIndex(index)
       }
@@ -287,14 +287,11 @@ export default {
     },
     error () {
       this.songReady = false
-      this.next()
-      console.log(1)
     },
 
     // 播放时间轴
     updatatime (e) {
       this.currentTime = e.target.currentTime ? e.target.currentTime : 0
-      console.log(e.target)
     },
     format (interval) {
       interval = interval | 0
@@ -384,7 +381,7 @@ export default {
     // cd封面滑动部分
     middleTouchStart (e) {
       this.touch.initiated = true
-      this.touch.move = true
+      this.touch.moved = false
       const touch = e.touches[0]
       this.touch.startX = touch.pageX
       this.touch.startY = touch.pageY
@@ -401,8 +398,8 @@ export default {
         return
       }
 
-      if (!this.touch.move) {
-        return
+      if (!this.touch.moved) {
+        this.touch.moved = true
       }
 
       const left = this.currentShow === 'cd' ? 0 : -window.innerWidth
@@ -415,7 +412,7 @@ export default {
       this.$refs.middleL.style[transitionDuration] = '0'
     },
     middleTouchEnd (e) {
-      if (!this.touch.move) {
+      if (!this.touch.moved) {
         return
       }
       let opacity
@@ -450,7 +447,6 @@ export default {
   },
   watch: {
     currentSong (newValue, oldValue) {
-      debugger
       if (newValue.id === oldValue.id) {
         return
       }
@@ -461,12 +457,12 @@ export default {
       setTimeout(() => {
         newValue.getSongSouse().then((url) => {
           if (url) {
-            // this.$refs.audio.play()
-            this.setPlayingState(true)
+            this.$refs.audio.play()
+            // this.setPlayingState(true)
             this.getLyric()
           } else {
-            this.currentTime = 0
             this.setPlayingState(false)
+            this.currentLyric = null
             // this.next()
           }
         })
@@ -474,6 +470,9 @@ export default {
     },
     playing (newValue) {
       const audio = this.$refs.audio
+      if (!audio) {
+        return
+      }
       this.$nextTick(() => {
         newValue ? audio.play() : audio.pause()
       })

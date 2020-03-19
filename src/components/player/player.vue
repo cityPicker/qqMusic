@@ -82,7 +82,7 @@
         </div>
       </div>
     </transition>
-    <audio ref="audio" @canplay="ready" @error="error" @timeupdate="updatatime" @ended="end" :src="currentSong.url"></audio>
+    <audio ref="audio" autoplay="autoplay" @canplay="ready" @error="error" @timeupdate="updatatime" @ended="end" :src="currentSong.url"></audio>
   </div>
 </template>
 
@@ -287,6 +287,7 @@ export default {
     },
     error () {
       this.songReady = false
+      this.setPlayingState(false)
     },
 
     // 播放时间轴
@@ -461,7 +462,7 @@ export default {
             // this.setPlayingState(true)
             this.getLyric()
           } else {
-            this.setPlayingState(false)
+            // this.setPlayingState(false)
             // this.currentLyric = null
             // this.next()
           }

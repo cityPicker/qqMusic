@@ -63,6 +63,7 @@ export default {
         })
       }
 
+      // 监听滚动到底部
       if (this.pullup) {
         this.scroll.on('scrollEnd', () => {
           if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
@@ -71,6 +72,7 @@ export default {
         })
       }
 
+      // 监听滚动开始
       if (this.beforeScroll) {
         this.scroll.on('beforeScrollStart', () => {
           this.$emit('beforeScroll')

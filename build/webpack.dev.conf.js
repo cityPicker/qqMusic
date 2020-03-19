@@ -120,6 +120,29 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         }).catch((err) => {
           console.log(err)
         })
+      }),
+      // 搜索
+      app.get('/api/search', function(req, res){
+        var url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+        axios.get(url,{
+          headers: {
+            origin: 'https://y.qq.com',
+            referer: 'https://y.qq.com/m/index.html'
+          },
+          params: req.query
+        }).then((result) => {
+          var ret = result.data
+          if (typeof ret === 'string') {
+            var reg = /^callback\(({.*})\)/
+            var matches = ret.match(reg)
+            if (matches) {
+              ret = JSON.parse(matches[1])
+            }
+          }
+          res.json(ret)
+        }).catch((err) => {
+          console.log(err)
+        })
       })
     }
   },

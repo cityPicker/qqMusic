@@ -13,10 +13,19 @@
                 </li>
               </ul>
             </div>
+            <div class="search-history" v-show="searchHistory.length">
+              <h1 class="title">
+                <span class="text">搜索历史</span>
+                <span class="clear">
+                  <i class="icon-clear"></i>
+                </span>
+              </h1>
+              <search-list :searches="searchHistory"></search-list>
+            </div>
           </div>
         </div>
         <div class="search-result" v-show="query">
-          <suggest :query="query" @listScroll="blurQuery"></suggest>
+          <suggest :query="query" @listScroll="blurQuery" @select="savaSearch"></suggest>
         </div>
         <router-view></router-view>
     </div>
@@ -28,6 +37,8 @@ import {getHotKey} from 'api/search'
 import {ERR_OK} from 'api/config'
 import Suggest from 'components/suggest/suggest'
 import {playlistMixin} from 'common/js/mixin'
+import {mapActions, mapGetters} from 'vuex'
+import SearchList from 'base/search-list/search-list'
 
 export default {
   data () {
@@ -39,10 +50,16 @@ export default {
   mixins: [playlistMixin],
   components: {
     SearchBox,
-    Suggest
+    Suggest,
+    SearchList
   },
   created () {
     this._getHotKey()
+  },
+  computed: {
+    ...mapGetters([
+      'searchHistory'
+    ])
   },
   methods: {
     _getHotKey () {
@@ -64,7 +81,13 @@ export default {
     },
     blurQuery () {
       this.$refs.searchBox.blurQuery()
-    }
+    },
+    savaSearch (item) {
+      this.savaSearchHistory(item)
+    },
+    ...mapActions([
+      'savaSearchHistory'
+    ])
   }
 }
 </script>
@@ -98,6 +121,22 @@ export default {
           background $color-highlight-background
           font-size $font-size-medium
           color $color-text-d
+      .search-history
+        position: relative
+        margin: 0 20px
+        .title
+          display: flex
+          align-items: center
+          height: 40px
+          font-size: $font-size-medium
+          color: $color-text-l
+          .text
+            flex: 1
+          .clear
+            extend-click()
+            .icon-clear
+              font-size: $font-size-medium
+              color: $color-text-d
   .search-result
     position fixed
     width 100%

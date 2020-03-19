@@ -145,6 +145,8 @@ export default {
       } else {
         this.insertPlay(item)
       }
+
+      this.$emit('select', this.query)
     },
     ...mapMutations({
       setSinger: 'SET_SINGER'

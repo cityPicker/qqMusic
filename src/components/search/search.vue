@@ -16,17 +16,18 @@
             <div class="search-history" v-show="searchHistory.length">
               <h1 class="title">
                 <span class="text">搜索历史</span>
-                <span class="clear">
+                <span class="clear" @click="showConfirm">
                   <i class="icon-clear"></i>
                 </span>
               </h1>
-              <search-list :searches="searchHistory"></search-list>
+              <search-list :searches="searchHistory" @select="addQuery" @deleteOne="deleteSearchHistory"></search-list>
             </div>
           </div>
         </div>
         <div class="search-result" v-show="query">
-          <suggest :query="query" @listScroll="blurQuery" @select="savaSearch"></suggest>
+          <suggest :query="query" @listScroll="blurQuery" @select="savaSearchHistory"></suggest>
         </div>
+        <confirm ref="confirm" text="是否清空所有历史" confirm="清空" @confirm="clearSearchHistory"></confirm>
         <router-view></router-view>
     </div>
 </template>
@@ -39,6 +40,7 @@ import Suggest from 'components/suggest/suggest'
 import {playlistMixin} from 'common/js/mixin'
 import {mapActions, mapGetters} from 'vuex'
 import SearchList from 'base/search-list/search-list'
+import Confirm from 'base/confirm/confirm'
 
 export default {
   data () {
@@ -51,7 +53,8 @@ export default {
   components: {
     SearchBox,
     Suggest,
-    SearchList
+    SearchList,
+    Confirm
   },
   created () {
     this._getHotKey()
@@ -82,11 +85,13 @@ export default {
     blurQuery () {
       this.$refs.searchBox.blurQuery()
     },
-    savaSearch (item) {
-      this.savaSearchHistory(item)
+    showConfirm () {
+      this.$refs.confirm.show()
     },
     ...mapActions([
-      'savaSearchHistory'
+      'savaSearchHistory',
+      'deleteSearchHistory',
+      'clearSearchHistory'
     ])
   }
 }

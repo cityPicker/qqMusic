@@ -1,7 +1,7 @@
 import * as types from './mutation-types'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
-import {savaSearch} from 'common/js/cache'
+import {savaSearch, deleteSearch, clearSearch} from 'common/js/cache'
 
 function findIndex (list, song) {
   return list.findIndex((item) => {
@@ -37,7 +37,7 @@ export const insertPlay = function ({commit, state}, song) {
   let playlist = state.playlist.slice()
   let sequenceList = state.sequenceList.slice()
   let currentIndex = state.currentIndex
-  let currentSong = state.playlist.currentIndex
+  let currentSong = playlist[currentIndex]
 
   // 查找playlist中是否有待插入歌曲，有的话返回fPIndex
   let fPIndex = findIndex(playlist, song)
@@ -84,4 +84,12 @@ export const insertPlay = function ({commit, state}, song) {
 
 export const savaSearchHistory = function ({commit}, query) {
   commit(types.SET_SEARCH_HISTORY, savaSearch(query))
+}
+
+export const deleteSearchHistory = function ({commit}, item) {
+  commit(types.SET_SEARCH_HISTORY, deleteSearch(item))
+}
+
+export const clearSearchHistory = function ({commit}) {
+  commit(types.SET_SEARCH_HISTORY, clearSearch())
 }

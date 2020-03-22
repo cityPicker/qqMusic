@@ -24,7 +24,7 @@
           </transition-group>
         </scroll>
         <div class="list-operate">
-          <div class="add">
+          <div class="add" @click="addSong">
             <i class="icon-add"></i>
             <span class="text">添加歌曲到队列</span>
           </div>
@@ -34,6 +34,7 @@
         </div>
       </div>
       <confirm ref="confirm" text="是否清空播放列表" confirmBtnText="清空" @confirm="clearSonglist"></confirm>
+      <add-song ref="addSong"></add-song>
     </div>
   </transition>
 </template>
@@ -44,6 +45,7 @@ import {playMode} from 'common/js/config'
 import {playerMixin} from 'common/js/mixin'
 import Scroll from 'base/scroll/scroll'
 import Confirm from 'base/confirm/confirm'
+import AddSong from 'components/add-song/add-song'
 
 export default {
   data () {
@@ -54,7 +56,8 @@ export default {
   mixins: [playerMixin],
   components: {
     Scroll,
-    Confirm
+    Confirm,
+    AddSong
   },
   computed: {
     ...mapGetters([
@@ -113,6 +116,9 @@ export default {
     clearSonglist () {
       this.deleteSonglist()
       this.hide()
+    },
+    addSong () {
+      this.$refs.addSong.show()
     },
     ...mapMutations({
       setCurrentIndex: 'SET_CURRENTINDEX',

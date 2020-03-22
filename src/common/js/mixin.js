@@ -1,4 +1,4 @@
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
 
@@ -66,5 +66,34 @@ export const playerMixin = {
 
       this.setCurrentIndex(index)
     }
+  }
+}
+
+// 搜索相关
+export const searchMixin = {
+  data () {
+    return {
+      query: ''
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'searchHistory'
+    ])
+  },
+  methods: {
+    onQueryChange (query) {
+      this.query = query
+    },
+    addQuery (query) {
+      this.$refs.searchBox.setQuery(query)
+    },
+    blurQuery () {
+      this.$refs.searchBox.blurQuery()
+    },
+    ...mapActions([
+      'savaSearchHistory',
+      'deleteSearchHistory'
+    ])
   }
 }

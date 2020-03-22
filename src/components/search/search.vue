@@ -39,7 +39,7 @@ import SearchBox from 'base/search-box/search-box'
 import {getHotKey} from 'api/search'
 import {ERR_OK} from 'api/config'
 import Suggest from 'components/suggest/suggest'
-import {playlistMixin} from 'common/js/mixin'
+import {playlistMixin, searchMixin} from 'common/js/mixin'
 import {mapActions, mapGetters} from 'vuex'
 import SearchList from 'base/search-list/search-list'
 import Confirm from 'base/confirm/confirm'
@@ -48,11 +48,14 @@ import Scroll from 'base/scroll/scroll'
 export default {
   data () {
     return {
-      hotkey: [],
-      query: ''
+      hotkey: []
+      // query: ''
     }
   },
-  mixins: [playlistMixin],
+  mixins: [
+    playlistMixin,
+    searchMixin
+  ],
   components: {
     SearchBox,
     Suggest,
@@ -65,7 +68,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'searchHistory'
+      // 'searchHistory'
     ]),
     shortcut () {
       return this.hotkey.concat(this.searchHistory)
@@ -79,12 +82,12 @@ export default {
         }
       })
     },
-    addQuery (query) {
-      this.$refs.searchBox.setQuery(query)
-    },
-    onQueryChange (query) {
-      this.query = query
-    },
+    // addQuery (query) {
+    //   this.$refs.searchBox.setQuery(query)
+    // },
+    // onQueryChange (query) {
+    //   this.query = query
+    // },
     handlePlaylist (playlist) {
       let bottom = playlist.length > 0 ? '60px' : 0
 
@@ -94,15 +97,15 @@ export default {
       this.$refs.shortcutWrapper.style.bottom = bottom
       this.$refs.shortcut.refresh()
     },
-    blurQuery () {
-      this.$refs.searchBox.blurQuery()
-    },
+    // blurQuery () {
+    //   this.$refs.searchBox.blurQuery()
+    // },
     showConfirm () {
       this.$refs.confirm.show()
     },
     ...mapActions([
-      'savaSearchHistory',
-      'deleteSearchHistory',
+      // 'savaSearchHistory',
+      // 'deleteSearchHistory',
       'clearSearchHistory'
     ])
   },

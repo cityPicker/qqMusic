@@ -9,6 +9,7 @@ function findIndex (list, song) {
   })
 }
 
+// 选择歌曲
 export const selectPlay = function ({commit, state}, {list, index}) {
   commit(types.SET_SEQUENCE_LIST, list)
   if (state.mode === playMode.random) {
@@ -23,6 +24,7 @@ export const selectPlay = function ({commit, state}, {list, index}) {
   commit(types.SET_PLAYING_STATE, true)
 }
 
+// 随机播放
 export const randomPlay = function ({commit}, {list}) {
   commit(types.SET_PLAY_MODE, playMode.random)
   commit(types.SET_SEQUENCE_LIST, list)
@@ -33,7 +35,8 @@ export const randomPlay = function ({commit}, {list}) {
   commit(types.SET_PLAYING_STATE, true)
 }
 
-export const insertPlay = function ({commit, state}, song) {
+// 插入一首歌
+export const insertSong = function ({commit, state}, song) {
   let playlist = state.playlist.slice()
   let sequenceList = state.sequenceList.slice()
   let currentIndex = state.currentIndex
@@ -92,4 +95,36 @@ export const deleteSearchHistory = function ({commit}, item) {
 
 export const clearSearchHistory = function ({commit}) {
   commit(types.SET_SEARCH_HISTORY, clearSearch())
+}
+
+// 删除一首歌
+export const deleteSong = function ({commit, state}, song) {
+  let playlist = state.playlist.slice()
+  let sequenceList = state.sequenceList.slice()
+  let currentIndex = state.currentIndex
+
+  const pIndex = findIndex(playlist, song)
+  const sIndex = findIndex(sequenceList, song)
+
+  playlist.splice(pIndex, 1)
+  sequenceList.splice(sIndex, 1)
+
+  if (pIndex < currentIndex || currentIndex === playlist.length) {
+    currentIndex--
+  }
+
+  commit(types.SET_PLAYLIST, playlist)
+  commit(types.SET_SEQUENCE_LIST, sequenceList)
+  commit(types.SET_CURRENTINDEX, currentIndex)
+
+  let playingState = playlist.length > 0
+  commit(types.SET_PLAYING_STATE, playingState)
+}
+
+// 删除当前列表
+export const deleteSonglist = function ({commit}) {
+  commit(types.SET_PLAYLIST, [])
+  commit(types.SET_SEQUENCE_LIST, [])
+  commit(types.SET_CURRENTINDEX, -1)
+  commit(types.SET_PLAYING_STATE, false)
 }

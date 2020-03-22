@@ -143,7 +143,7 @@ export default {
         })
         this.setSinger(singer)
       } else {
-        this.insertPlay(item)
+        this.insertSong(item)
       }
 
       this.$emit('select', this.query)
@@ -152,7 +152,7 @@ export default {
       setSinger: 'SET_SINGER'
     }),
     ...mapActions([
-      'insertPlay'
+      'insertSong'
     ]),
     listScroll () {
       this.$emit('listScroll')

@@ -77,11 +77,12 @@
             <i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
           </progress-circle>
         </div>
-        <div class="control">
+        <div class="control" @click.stop="showPlaylist">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
+    <playlist ref="playlist"></playlist>
     <audio ref="audio" autoplay="autoplay" @canplay="ready" @error="error" @timeupdate="updatatime" @ended="end" :src="currentSong.url"></audio>
   </div>
 </template>
@@ -96,6 +97,7 @@ import {playMode} from 'common/js/config'
 import {shuffle} from 'common/js/util'
 import Lyric from 'lyric-parser'
 import Scroll from 'base/scroll/scroll'
+import Playlist from 'components/playlist/playlist'
 
 const transform = prefixStyle('transform')
 const transitionDuration = prefixStyle('transitionDuration')
@@ -115,7 +117,8 @@ export default {
   components: {
     ProgressBar,
     ProgressCircle,
-    Scroll
+    Scroll,
+    Playlist
   },
   created () {
     this.touch = {}
@@ -444,10 +447,17 @@ export default {
       this.$refs.middleL.style.opacity = opacity
       this.$refs.middleL.style[transitionDuration] = '300ms'
       this.touch.initiated = false
+    },
+    // 打开播放列表
+    showPlaylist () {
+      this.$refs.playlist.show()
     }
   },
   watch: {
     currentSong (newValue, oldValue) {
+      if (!newValue.id) {
+        return
+      }
       if (newValue.id === oldValue.id) {
         return
       }

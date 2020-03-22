@@ -12,6 +12,7 @@ const state = {
   sequenceList: [],
   // 播放模式
   mode: playMode.sequence,
+  // playlist下的currentIndex
   currentIndex: -1,
   // 歌单
   disc: {},

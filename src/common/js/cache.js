@@ -3,6 +3,9 @@ import storage from 'good-storage'
 const SEARCH_KEY = '__SEARCH__'
 const SEARCH_MAX_LEN = 15
 
+const PLAY_KEY = '__PLAY__'
+const PLAY_MAX_LEN = 200
+
 // 数组插入方法
 function insertArr (arr, val, compare, maxLen) {
   let index = arr.findIndex(compare)
@@ -21,13 +24,14 @@ function insertArr (arr, val, compare, maxLen) {
 }
 
 // 从数组删除
-function deleteFromArr (arr, val, compare) {
+function deleteFromArr (arr, compare) {
   let index = arr.findIndex(compare)
   if (index > -1) {
     arr.splice(index, 1)
   }
 }
 
+// 搜索历史相关
 export function savaSearch (query) {
   let searches = storage.get(SEARCH_KEY, [])
 
@@ -46,7 +50,7 @@ export function loadSearch () {
 
 export function deleteSearch (query) {
   let searches = storage.get(SEARCH_KEY, [])
-  deleteFromArr(searches, query, (item) => {
+  deleteFromArr(searches, (item) => {
     return item === query
   })
   storage.set(SEARCH_KEY, searches)
@@ -56,5 +60,38 @@ export function deleteSearch (query) {
 
 export function clearSearch () {
   storage.remove(SEARCH_KEY)
+  return []
+}
+
+// 播放历史相关
+export function savePlay (song) {
+  let songs = storage.get(PLAY_KEY, [])
+
+  insertArr(songs, song, (item) => {
+    return item.id === song.id
+  }, PLAY_MAX_LEN)
+  storage.set(PLAY_KEY, songs)
+
+  return songs
+}
+
+export function loadPlay () {
+  return storage.get(PLAY_KEY, [])
+}
+
+export function deletePlay (song) {
+  let songs = storage.get(PLAY_KEY, [])
+
+  deleteFromArr(songs, song, (item) => {
+    return item.id === song.id
+  })
+
+  storage.set(PLAY_KEY, songs)
+
+  return songs
+}
+
+export function clearPlay () {
+  storage.remove(PLAY_KEY)
   return []
 }

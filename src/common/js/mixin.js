@@ -78,7 +78,8 @@ export const searchMixin = {
   },
   computed: {
     ...mapGetters([
-      'searchHistory'
+      'searchHistory',
+      'playHistory'
     ])
   },
   methods: {

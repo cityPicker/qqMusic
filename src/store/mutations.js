@@ -30,6 +30,9 @@ const mutations = {
   },
   [types.SET_SEARCH_HISTORY] (state, query) {
     state.searchHistory = query
+  },
+  [types.SET_PLAY_HISTORY] (state, song) {
+    state.playHistory = song
   }
 }
 

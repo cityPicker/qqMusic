@@ -48,8 +48,7 @@ import Scroll from 'base/scroll/scroll'
 export default {
   data () {
     return {
-      hotkey: [],
-      refreshDelay: 120
+      hotkey: []
     }
   },
   mixins: [

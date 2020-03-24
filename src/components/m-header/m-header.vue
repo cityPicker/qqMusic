@@ -1,7 +1,10 @@
 <template>
   <div class="m-header">
     <div class="icon"></div>
-    <!-- <div class="text">请登录</div> -->
+    <div class="text">哈哈音乐</div>
+    <router-link to="/user" tag="div" class="mine">
+      <i class="icon-mine"></i>
+    </router-link>
   </div>
 </template>
 
@@ -29,5 +32,17 @@ export default {}
       bg-image('logo')
       background-size: 30px 32px
     .text
-      font-size: 12px
+      display inline-block
+      vertical-align top
+      line-height 44px
+      font-size: $font-size-large
+    .mine
+      position: absolute
+      top: 0
+      right: 0
+      .icon-mine
+        display: block
+        padding: 12px
+        font-size: 20px
+        color: $color-theme
 </style>

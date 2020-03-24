@@ -6,6 +6,9 @@ const SEARCH_MAX_LEN = 15
 const PLAY_KEY = '__PLAY__'
 const PLAY_MAX_LEN = 200
 
+const FAVORITE_KEY = '__FAVORITE__'
+const FAVORITE_MAX_LEN = 200
+
 // 数组插入方法
 function insertArr (arr, val, compare, maxLen) {
   let index = arr.findIndex(compare)
@@ -82,7 +85,7 @@ export function loadPlay () {
 export function deletePlay (song) {
   let songs = storage.get(PLAY_KEY, [])
 
-  deleteFromArr(songs, song, (item) => {
+  deleteFromArr(songs, (item) => {
     return item.id === song.id
   })
 
@@ -94,4 +97,33 @@ export function deletePlay (song) {
 export function clearPlay () {
   storage.remove(PLAY_KEY)
   return []
+}
+
+// 收藏相关
+export function saveFavorite (song) {
+  let favorites = storage.get(FAVORITE_KEY, [])
+
+  insertArr(favorites, song, (item) => {
+    return item.id === song.id
+  }, FAVORITE_MAX_LEN)
+
+  storage.set(FAVORITE_KEY, favorites)
+
+  return favorites
+}
+
+export function deleteFavorite (song) {
+  let favorites = storage.get(FAVORITE_KEY, [])
+
+  deleteFromArr(favorites, (item) => {
+    return item.id === song.id
+  })
+
+  storage.set(FAVORITE_KEY, favorites)
+
+  return favorites
+}
+
+export function loadFavorite () {
+  return storage.get(FAVORITE_KEY, [])
 }

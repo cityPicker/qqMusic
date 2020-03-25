@@ -1,13 +1,53 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Recommend from '@/components/Recommend/Recommend'
-import Rank from '@/components/Rank/rank'
-import Singer from '@/components/Singer/singer'
-import Search from '@/components/Search/search'
-import SingerDetail from '@/components/singer-detail/singer-detail'
-import Disc from '@/components/disc/disc'
-import TopList from '@/components/top-list/top-list'
-import UserCenter from '@/components/user-center/user-center'
+
+const Recommend = resolve => {
+  import('@/components/Recommend/Recommend').then((module) => {
+    resolve(module)
+  })
+}
+
+const Rank = resolve => {
+  import('@/components/Rank/rank').then((module) => {
+    resolve(module)
+  })
+}
+
+const Singer = resolve => {
+  import('@/components/Singer/singer').then((module) => {
+    resolve(module)
+  })
+}
+
+const Search = resolve => {
+  import('@/components/Search/search').then((module) => {
+    resolve(module)
+  })
+}
+
+const SingerDetail = resolve => {
+  import('@/components/singer-detail/singer-detail').then((module) => {
+    resolve(module)
+  })
+}
+
+const Disc = resolve => {
+  import('@/components/disc/disc').then((module) => {
+    resolve(module)
+  })
+}
+
+const TopList = resolve => {
+  import('@/components/top-list/top-list').then((module) => {
+    resolve(module)
+  })
+}
+
+const UserCenter = resolve => {
+  import('@/components/user-center/user-center').then((module) => {
+    resolve(module)
+  })
+}
 
 Vue.use(Router)
 

@@ -83,7 +83,7 @@
       </div>
     </transition>
     <playlist ref="playlist"></playlist>
-    <audio ref="audio" autoplay="autoplay" @canplay="ready" @error="error" @timeupdate="updatatime" @ended="end" :src="currentSong.url"></audio>
+    <audio ref="audio" autoplay="autoplay" @play="ready" @error="error" @timeupdate="updatatime" @ended="end" :src="currentSong.url"></audio>
   </div>
 </template>
 
@@ -252,8 +252,9 @@ export default {
       if (!this.songReady) {
         return
       }
-      if (this.mode === playMode.loop) {
+      if (this.playlist.length === 1) {
         this.loop()
+        return
       } else {
         let index = this.currentIndex - 1
         if (index === -1) {
@@ -270,8 +271,9 @@ export default {
       if (!this.songReady) {
         return
       }
-      if (this.mode === playMode.loop) {
+      if (this.playlist.length === 1) {
         this.loop()
+        return
       } else {
         let index = this.currentIndex + 1
         if (index === this.playlist.length) {
@@ -335,11 +337,18 @@ export default {
     },
     loop () {
       this.$refs.audio.currentTime = 0
+      this.$refs.audio.play()
+      if (this.currentLyric) {
+        this.currentLyric.seek(0)
+      }
     },
 
     // lyric
     getLyric () {
       this.currentSong.getLyric().then((lyric) => {
+        if (this.currentSong.lyric !== lyric) {
+          return
+        }
         this.currentLyric = new Lyric(lyric, this.handleLyric)
         if (this.playing) {
           this.currentLyric.play()
@@ -443,8 +452,12 @@ export default {
 
       if (this.currentLyric) {
         this.currentLyric.stop()
+        this.currentTime = 0
+        this.playingLyric = ''
+        this.currentLineNum = 0
       }
-      setTimeout(() => {
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
         newValue.getSongSouse().then((url) => {
           if (url) {
             this.$refs.audio.play()

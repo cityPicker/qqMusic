@@ -24,7 +24,7 @@
           </div>
         </div>
         <div class="loading-container" v-show="!discList.length">
-          <loading></loading>
+          <base-loading></base-loading>
         </div>
       </div>
     </scroll>
@@ -37,7 +37,7 @@ import {getRecommend, getDiscList} from 'api/recommend'
 import {ERR_OK} from 'api/config'
 import Slider from 'base/slider/slider'
 import Scroll from 'base/scroll/scroll'
-import Loading from 'base/loading/loading'
+// import Loading from 'base/loading/loading'
 import {playlistMixin} from 'common/js/mixin'
 import {mapMutations} from 'vuex'
 
@@ -50,8 +50,7 @@ export default {
   },
   components: {
     Slider,
-    Scroll,
-    Loading
+    Scroll
   },
   created () {
     this._getRecommend()
